@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	package="org.tf"
+	android:versionCode="17"
+	android:versionName="1.0.0"> 
+
+	<uses-sdk android:minSdkVersion="6" />
+	  
+	<application android:icon="@drawable/icon" android:label="@string/app_name">
+
+		<activity
+			android:name=".MainMenuActivity"
+			android:theme="@style/Theme"
+			android:screenOrientation="portrait">
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN" />
+				<category android:name="android.intent.category.LAUNCHER" />
+			</intent-filter>
+		</activity>
+
+		<activity
+			android:name=".SettingsActivity"
+			android:theme="@style/Theme"
+			android:windowSoftInputMode="stateVisible|adjustResize">
+		</activity>
+
+		<activity
+			android:name=".HelpActivity"
+			android:theme="@style/Theme"
+			android:screenOrientation="portrait">
+		</activity>
+		
+		<activity
+			android:name=".BrowserActivity"
+			android:theme="@style/Theme"
+			android:screenOrientation="portrait">
+		</activity>
+
+		<activity
+			android:name=".SelectSkillActivity"
+			android:theme="@style/Theme"
+			android:screenOrientation="portrait">
+		</activity>
+		
+		<activity
+			android:name=".GameActivity"
+			android:theme="@style/Theme"
+			android:screenOrientation="portrait">
+		</activity>
+
+		<activity
+			android:name=".SongFinishedActivity"
+			android:theme="@style/Theme"
+			android:screenOrientation="portrait">
+		</activity>
+
+		<activity
+			android:name=".ErrorReportActivity"
+			android:theme="@android:style/Theme.Light"
+			android:screenOrientation="portrait"/>
+		
+		<activity
+			android:name=".TestActivity"
+			android:theme="@style/Theme"
+			android:screenOrientation="portrait">
+		</activity>
+		
+	</application>
+	
+</manifest> 
