@@ -255,19 +255,19 @@ public class GLHelpers {
 	/////////////////////////////////// buffers
 
 	public static ByteBuffer allocateIntBuffer(int capacity) {
-		ByteBuffer buffer=ByteBuffer.allocate(capacity*4);
+		ByteBuffer buffer=ByteBuffer.allocateDirect(capacity*4);
 		buffer.order(ByteOrder.nativeOrder());
 		return buffer;
 	}
 	
 	public static ByteBuffer allocateFloatBuffer(int capacity) {
-		ByteBuffer buffer=ByteBuffer.allocate(capacity*4);
+		ByteBuffer buffer=ByteBuffer.allocateDirect(capacity*4);
 		buffer.order(ByteOrder.nativeOrder());
 		return buffer;
 	}
 
 	public static ByteBuffer allocateShortBuffer(int capacity) {
-		ByteBuffer buffer=ByteBuffer.allocate(capacity*2);
+		ByteBuffer buffer=ByteBuffer.allocateDirect(capacity*2);
 		buffer.order(ByteOrder.nativeOrder());
 		return buffer;
 	}

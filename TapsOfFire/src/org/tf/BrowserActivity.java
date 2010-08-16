@@ -33,6 +33,11 @@ import org.tf.ui.ActivityBase;
 import org.tf.ui.UIHelpers;
 import org.tf.util.DataOutputBA;
 import org.tf.R;
+
+import com.mobclix.android.sdk.MobclixMMABannerXLAdView;
+
+//import com.admob.android.ads.AdView;
+
 import skiba.util.Simply;
 import android.content.Intent;
 import android.database.DataSetObserver;
@@ -50,6 +55,22 @@ public class BrowserActivity extends ActivityBase implements ListAdapter, OnItem
 	protected void onCreate(Bundle savedState) {
 		super.onCreate(savedState);
 		setContentView(R.layout.browser);
+		
+		MobclixMMABannerXLAdView banner_adview = (MobclixMMABannerXLAdView) findViewById(R.id.banner_adview);
+		
+		try
+		{
+			banner_adview.getAd();
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		
+		//example_adview = (AdView) findViewById(R.id.ad);
+		//example_adview.setVisibility(AdView.VISIBLE);
+		 
+		 
 		usePageFlipper(savedState);
 		
 		m_recentSongs=new ArrayList<SongInfo>();
@@ -66,8 +87,11 @@ public class BrowserActivity extends ActivityBase implements ListAdapter, OnItem
 		
 		ListView list=(ListView)findViewById(R.id.list);
 		list.setAdapter(this);
-		list.setOnItemClickListener(this);
+		list.setOnItemClickListener(this); 
+		
 	}
+	//private AdView example_adview;
+	
 	
 	protected void onPause() {
 		super.onPause();
@@ -117,6 +141,7 @@ public class BrowserActivity extends ActivityBase implements ListAdapter, OnItem
 		catch (IOException e) {
 			throw new RuntimeException(e);
 		}
+		//example_adview = null;
 		startActivity(intent);
 	}
 	
