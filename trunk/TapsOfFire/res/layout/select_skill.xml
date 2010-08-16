@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ViewFlipper
 	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:myapp="http://schemas.android.com/apk/res/org.tf"
 	style="@style/PageFlipper"
 	android:id="@+id/page_flipper"
 	android:background="@drawable/select_skill_background">
@@ -13,7 +14,6 @@
 		    android:orientation="vertical"
 		    android:layout_width="fill_parent"
 		    android:layout_height="wrap_content">
-		    
 		    <org.tf.ui.FTextView android:id="@+id/name"
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
@@ -22,6 +22,8 @@
 				android:marqueeRepeatLimit="marquee_forever"
         		android:textColor="@color/selected"
 				android:textSize="@dimen/text_large"/>
+				
+				
 		
 		    <org.tf.ui.FTextView android:id="@+id/artist"
 		        android:layout_width="wrap_content"
@@ -30,6 +32,7 @@
 			    android:ellipsize="end"
 				android:textColor="@color/base"
 				android:textSize="@dimen/text_normal"/>
+				
 		    
 		</LinearLayout>
 		
@@ -59,6 +62,13 @@
 		
 	    <include android:id="@+id/lastDivider"
 	    	layout="@layout/divider_horizontal"/>
+	    	
+    	<com.mobclix.android.sdk.MobclixMMABannerXLAdView
+				android:id="@+id/banner_adview"
+				android:layout_height="50dip"
+				android:layout_width="320dip"
+				android:layout_gravity="bottom"
+			/>
 		
 	</LinearLayout>
 	

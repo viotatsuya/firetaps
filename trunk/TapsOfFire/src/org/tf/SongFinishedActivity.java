@@ -24,6 +24,11 @@ import org.tf.ui.ActivityBase;
 import org.tf.ui.UIHelpers;
 import org.tf.util.DataInputBA;
 import org.tf.R;
+
+import com.mobclix.android.sdk.MobclixMMABannerXLAdView;
+
+//import com.admob.android.ads.AdView;
+
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -45,6 +50,16 @@ public class SongFinishedActivity extends ActivityBase {
 //		catch (InvalidSongException e) {
 //			throw new RuntimeException(e);
 //		}
+		MobclixMMABannerXLAdView banner_adview = (MobclixMMABannerXLAdView) findViewById(R.id.banner_adview);
+		
+		try
+		{
+			banner_adview.getAd();
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
 
 		try {
 			byte[] state=getIntent().getByteArrayExtra(FinishedSongInfo.BUNDLE_KEY);
@@ -57,7 +72,10 @@ public class SongFinishedActivity extends ActivityBase {
 		setContentView(R.layout.final_score);
 		m_scoreView=(TextView)findViewById(R.id.score);
 		m_rating=(RatingBar)findViewById(R.id.rating);
+		//example_adview = (AdView) findViewById(R.id.ad3);
+		//example_adview.setVisibility(AdView.VISIBLE);
 	}
+	//private AdView example_adview;
 	
 	protected void onResume() {
 		super.onResume();

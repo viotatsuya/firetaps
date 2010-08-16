@@ -36,12 +36,16 @@ import org.tf.util.DataInputBA;
 import org.tf.util.DataOutputBA;
 import org.tf.util.MiscHelpers;
 import org.tf.R;
+
+import com.mobclix.android.sdk.MobclixMMABannerXLAdView;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Process;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 
@@ -49,7 +53,21 @@ public class SelectSkillActivity extends ActivityBase implements PlayableSkillVi
 	
 	protected void onCreate(Bundle savedState) {
 		super.onCreate(savedState);
+		
+		
 		setContentView(R.layout.select_skill);
+		
+		MobclixMMABannerXLAdView banner_adview = (MobclixMMABannerXLAdView) findViewById(R.id.banner_adview);
+		
+		try
+		{
+			banner_adview.getAd();
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		
 		usePageFlipper(savedState);
 		
 		Intent intent=getIntent();
@@ -65,11 +83,15 @@ public class SelectSkillActivity extends ActivityBase implements PlayableSkillVi
 //			throw new RuntimeException(e);
 //		}
 		
+		
 		initializeSkillViews();
 		
 		UIHelpers.setText(this,R.id.name,m_song.getName());
 		UIHelpers.setText(this,R.id.artist,m_song.getArtist());
 		UISoundEffects.playInSound();
+		
+		//example_adview = (AdView) findViewById(R.id.ad);
+		//example_adview.setVisibility(AdView.VISIBLE);
 	}
 	
 	protected void onResume() {

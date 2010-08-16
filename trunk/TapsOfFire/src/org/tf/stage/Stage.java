@@ -848,7 +848,7 @@ public class Stage {
 				}
 			}
 		}
-		Log.v("Taps", "using multitouch");
+		//Log.v("Taps", "using multitouch");
 		m_pickedKeyStrings=(strings &~ m_keyStrings);
 		m_keyStrings=strings;
 	}
@@ -1158,7 +1158,7 @@ public class Stage {
 
 	private static boolean checkStrings(int chordStrings,int activeStrings) {
 		
-		Log.v("Taps", "Touches:" + GameActivity.getNumTouches());
+		//Log.v("Taps", "Touches:" + GameActivity.getNumTouches());
 		if ( (chordStrings==STRINGS_012 || chordStrings==STRINGS_02) && GameActivity.getNumTouches() > 1) {;
 			return ( STRINGS_02 & activeStrings) == STRINGS_02;
 		} else if ( chordStrings ==STRINGS_012 || chordStrings == STRINGS_02){

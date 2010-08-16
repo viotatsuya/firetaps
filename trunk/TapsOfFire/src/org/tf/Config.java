@@ -50,7 +50,7 @@ public class Config {
 	
 	public static File getRootPath() {
 		File base=Environment.getExternalStorageDirectory();
-		return new File(base,"TapsOfFire");
+		return new File(base,"FireTaps");
 	}
 	public static File getBuiltinSongsPath() {
 		return new File("songs");

@@ -186,5 +186,5 @@ public class ErrorReportActivity extends Activity implements View.OnClickListene
 	
 	private String m_report;
 	
-	private static final String EMAIL="tapsoffire@gmail.com";
+	private static final String EMAIL="chuesterx@gmail.com";
 }

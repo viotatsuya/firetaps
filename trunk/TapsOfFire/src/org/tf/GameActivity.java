@@ -35,6 +35,7 @@ import org.tf.util.DataInputBA;
 import org.tf.util.DataOutputBA;
 import org.tf.util.GameFPSTimer;
 import org.tf.R;
+
 import skiba.util.Simply;
 import android.content.Intent;
 import android.opengl.GLSurfaceView;
@@ -50,8 +51,11 @@ import android.view.ViewGroup;
 public class GameActivity extends ActivityBase implements GameMenuView.Callback {
 	
 	protected void onCreate(Bundle savedState) {
-		Log.e("TOF","*************** onCreate()");
+		//Log.e("TOF","*************** onCreate()");
         super.onCreate(savedState);
+        
+        
+        
         addGLView();
         addMenuView();
         addLoadingView();
@@ -86,7 +90,11 @@ public class GameActivity extends ActivityBase implements GameMenuView.Callback 
 			throw new RuntimeException(e);
 		}
 		CrashHandler.setDetails(m_songInfo.getErrorDetails());
+		
+		
 	}
+	
+	
 	
 	protected void onSaveInstanceState(Bundle state) {
 		//Log.e("TOF","*************** onSaveInstanceState()");
@@ -95,7 +103,7 @@ public class GameActivity extends ActivityBase implements GameMenuView.Callback 
 	}
 	
 	protected void onPause() {
-		Log.e("TOF","*************** onPause()");
+		//Log.e("TOF","*************** onPause()");
 		super.onPause();
 		//destroyGL();  TODO: Fix this and remove hack 
 		SongDB.store(this);
@@ -103,7 +111,7 @@ public class GameActivity extends ActivityBase implements GameMenuView.Callback 
 	}
 	
 	protected void onResume() {
-		Log.e("TOF","*************** onResume()");
+		//Log.e("TOF","*************** onResume()");
 		super.onResume();
 		SongDB.load(this);
 		m_menuView.hide();
@@ -112,7 +120,7 @@ public class GameActivity extends ActivityBase implements GameMenuView.Callback 
 	}
 	
 	protected void onDestroy() {
-		Log.e("TOF","*************** onDestroy()");
+		//Log.e("TOF","*************** onDestroy()");
 		super.onDestroy();
 		if (m_stage!=null) {
 			m_stage.destroy();
@@ -157,7 +165,7 @@ public class GameActivity extends ActivityBase implements GameMenuView.Callback 
 			
 			m_id0 = pointerId;
 			
-			Log.v("taps","m_id0:"+m_id0+"  m_id1" + m_id1);
+			//Log.v("taps","m_id0:"+m_id0+"  m_id1" + m_id1);
 
 			m_touchX0=event.getX(event.findPointerIndex(m_id0));
 			m_touchY0=event.getY(event.findPointerIndex(m_id0));
@@ -221,7 +229,7 @@ public class GameActivity extends ActivityBase implements GameMenuView.Callback 
 //		{
 //			int elapsed=Simply.elapsedUptimeMillis(m_firstTouchTime);
 //			if (elapsed>1000) {
-//				//Log.e("TOF","touches per second: "+(float)m_totalTouches/elapsed*1000);
+//				////Log.e("TOF","touches per second: "+(float)m_totalTouches/elapsed*1000);
 //				m_totalTouches=0;
 //				m_firstTouchTime=SystemClock.uptimeMillis();
 //			}
@@ -243,7 +251,7 @@ public class GameActivity extends ActivityBase implements GameMenuView.Callback 
 	///////////////////////////////////////////////////////////////// stage
 	
 	private void onStageGLCreated(GL10 gl) {
-		Log.e("TOF","++++++++++ onStageGLCreated()");
+		////Log.e("TOF","++++++++++ onStageGLCreated()");
 		GLHelpers.initialize(gl);
 		Stage.setDefaults(gl);
 		
@@ -292,7 +300,7 @@ public class GameActivity extends ActivityBase implements GameMenuView.Callback 
 	}
 	
 	private void onStageGLDestroyed() {
-		Log.e("TOF","++++++++++ onStageGLDestroyed()");
+		//Log.e("TOF","++++++++++ onStageGLDestroyed()");
 		if (m_stage!=null) {
 			m_stage.stop(true);
 			m_stage.unloadResources(null);
@@ -301,7 +309,7 @@ public class GameActivity extends ActivityBase implements GameMenuView.Callback 
 	}
 	
 	private void onStageGLChanged(GL10 gl,int width,int height) {
-		Log.e("TOF","++++++++++ onStageGLChanged()");
+		//Log.e("TOF","++++++++++ onStageGLChanged()");
         if (m_stage!=null) {
         	m_stage.setViewport(gl,new GLRect(0,0,width,height));
         }
@@ -318,7 +326,7 @@ public class GameActivity extends ActivityBase implements GameMenuView.Callback 
 				screencoords[1] = m_touchY0;
 				screencoords[2] = m_touchX1;
 				screencoords[3] = m_touchY1;
-				Log.v("taps", "m_id0:" + m_id0 +" m_id1:" + m_id1);
+				//Log.v("taps", "m_id0:" + m_id0 +" m_id1:" + m_id1);
 				m_stage.onMultitouch( screencoords);
 			}
 			else{
@@ -335,7 +343,7 @@ public class GameActivity extends ActivityBase implements GameMenuView.Callback 
 	}
 	
 	private void onStageAction(int action) {
-		Log.e("TOF","++++++++++ onStageAction("+action+")");
+		//Log.e("TOF","++++++++++ onStageAction("+action+")");
 		if (m_stage==null) {
 			return;
 		}
@@ -360,7 +368,7 @@ public class GameActivity extends ActivityBase implements GameMenuView.Callback 
 	}
 	
 	private void onSaveStage(Bundle bundle) {
-		Log.e("TOF","++++++++++ onSaveStage()");
+		//Log.e("TOF","++++++++++ onSaveStage()");
 		if (m_stage==null) {
 			return;
 		}
@@ -373,7 +381,7 @@ public class GameActivity extends ActivityBase implements GameMenuView.Callback 
 	}
 	
 	private void onStageFinished(Stage.FinalScore score) {
-		Log.e("TOF","++++++++++ onStageFinished()");
+		////////////Log.e("TOF","++++++++++ onStageFinished()");
 		if (score.error==null) {
 			SongDB.update(
 				m_songInfo.getID(),
