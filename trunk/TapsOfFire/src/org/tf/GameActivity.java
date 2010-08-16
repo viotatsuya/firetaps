@@ -39,6 +39,7 @@ import org.tf.R;
 import skiba.util.Simply;
 import android.content.Intent;
 import android.opengl.GLSurfaceView;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -140,103 +141,137 @@ public class GameActivity extends ActivityBase implements GameMenuView.Callback 
 	public boolean onTouchEvent(MotionEvent event) {
 		
 		
+		
+
+    	final int sdkVersion = Integer.parseInt(Build.VERSION.SDK);
+    	
+    	
 		final int action = event.getAction();
 		
-		switch (action & MotionEvent.ACTION_MASK) {
-		
-		case MotionEvent.ACTION_UP:{
-			
-			m_totalTouches--;
-			
-			m_touchX0=-1;
-			m_touchY0=-1;
-			m_id0 = -1;
-			
-			m_touchX1=-1;
-			m_touchY1=-1;
-			m_id1 = -1;
-			break;
+		//without mulitouch
+		if ( sdkVersion < Build.VERSION_CODES.ECLAIR )
+		{
+            if (event.getAction()==MotionEvent.ACTION_UP) {
+                    m_touchX0=-1;
+                    m_touchY0=-1;
+            } else if (event.getAction()==MotionEvent.ACTION_DOWN) {
+                    m_touchX0=event.getX();
+                    m_touchY0=event.getY();
+            }
+//              if (m_firstTouchTime==0) {
+//                      m_firstTouchTime=SystemClock.uptimeMillis();
+//              }
+//              m_totalTouches++;
+//              {
+//                      int elapsed=Simply.elapsedUptimeMillis(m_firstTouchTime);
+//                      if (elapsed>1000) {
+//                              //Log.e("TOF","touches per second: "+(float)m_totalTouches/elapsed*1000);
+//                              m_totalTouches=0;
+//                              m_firstTouchTime=SystemClock.uptimeMillis();
+//                      }
+//              }
+            Simply.waitSleep(Config.getTouchHandlerSleep());
+            return true;
 		}
-		case MotionEvent.ACTION_DOWN:{
-			
-			m_totalTouches++;
-			
-			final int pointerId = event.getPointerId(0);
-			
-			m_id0 = pointerId;
-			
-			//Log.v("taps","m_id0:"+m_id0+"  m_id1" + m_id1);
-
-			m_touchX0=event.getX(event.findPointerIndex(m_id0));
-			m_touchY0=event.getY(event.findPointerIndex(m_id0));
-			break;
 		
-		}
-		case MotionEvent.ACTION_POINTER_UP: {
+		//using multitouch
+		else{
+			switch (action & MotionEvent.ACTION_MASK) {
 			
-			m_totalTouches--;
-			
-			final int pointerIndex = (action & MotionEvent.ACTION_POINTER_ID_MASK) 
-				>> MotionEvent.ACTION_POINTER_ID_SHIFT;
-			final int pointerId = event.getPointerId(pointerIndex);
-			
-			if ( pointerId == m_id0){
+			case MotionEvent.ACTION_UP:{
+				
+				m_totalTouches--;
+				
 				m_touchX0=-1;
 				m_touchY0=-1;
 				m_id0 = -1;
-			}
-			else{
+				
 				m_touchX1=-1;
 				m_touchY1=-1;
 				m_id1 = -1;
+				break;
 			}
-			break;
-			
-			
-		}
-		case MotionEvent.ACTION_POINTER_DOWN: {
-			
-			m_totalTouches++;
-			
-			final int pointerIndex = (action & MotionEvent.ACTION_POINTER_ID_MASK) 
-				>> MotionEvent.ACTION_POINTER_ID_SHIFT;
-			final int pointerId = event.getPointerId(pointerIndex);
-			
-			Log.v("Taps","number of taps:" + event.getPointerCount());
-			
-			if ( m_id0 != -1){
-				m_id1 = pointerId;
-			}
-			else{
+			case MotionEvent.ACTION_DOWN:{
+				
+				m_totalTouches++;
+				
+				final int pointerId = event.getPointerId(0);
+				
 				m_id0 = pointerId;
-			}
-			
-			if ( m_id0 != -1){
+				
+				//Log.v("taps","m_id0:"+m_id0+"  m_id1" + m_id1);
+		
 				m_touchX0=event.getX(event.findPointerIndex(m_id0));
 				m_touchY0=event.getY(event.findPointerIndex(m_id0));
+				break;
+			
 			}
+			case MotionEvent.ACTION_POINTER_UP: {
 				
-			if ( m_id1 != -1){
-				m_touchX1=event.getX(event.findPointerIndex(m_id1));
-				m_touchY1=event.getY(event.findPointerIndex(m_id1));
+				m_totalTouches--;
+				
+				final int pointerIndex = (action & MotionEvent.ACTION_POINTER_ID_MASK) 
+					>> MotionEvent.ACTION_POINTER_ID_SHIFT;
+				final int pointerId = event.getPointerId(pointerIndex);
+				
+				if ( pointerId == m_id0){
+					m_touchX0=-1;
+					m_touchY0=-1;
+					m_id0 = -1;
+				}
+				else{
+					m_touchX1=-1;
+					m_touchY1=-1;
+					m_id1 = -1;
+				}
+				break;
+				
+				
 			}
-			break;
+			case MotionEvent.ACTION_POINTER_DOWN: {
+				
+				m_totalTouches++;
+				
+				final int pointerIndex = (action & MotionEvent.ACTION_POINTER_ID_MASK) 
+					>> MotionEvent.ACTION_POINTER_ID_SHIFT;
+				final int pointerId = event.getPointerId(pointerIndex);
+				
+				Log.v("Taps","number of taps:" + event.getPointerCount());
+				
+				if ( m_id0 != -1){
+					m_id1 = pointerId;
+				}
+				else{
+					m_id0 = pointerId;
+				}
+				
+				if ( m_id0 != -1){
+					m_touchX0=event.getX(event.findPointerIndex(m_id0));
+					m_touchY0=event.getY(event.findPointerIndex(m_id0));
+				}
+					
+				if ( m_id1 != -1){
+					m_touchX1=event.getX(event.findPointerIndex(m_id1));
+					m_touchY1=event.getY(event.findPointerIndex(m_id1));
+				}
+				break;
+			}
+		//		if (m_firstTouchTime==0) {
+		//			m_firstTouchTime=SystemClock.uptimeMillis();
+		//		}
+		//		m_totalTouches++;
+		//		{
+		//			int elapsed=Simply.elapsedUptimeMillis(m_firstTouchTime);
+		//			if (elapsed>1000) {
+		//				////Log.e("TOF","touches per second: "+(float)m_totalTouches/elapsed*1000);
+		//				m_totalTouches=0;
+		//				m_firstTouchTime=SystemClock.uptimeMillis();
+		//			}
+		//		}
+			}
+			Simply.waitSleep(Config.getTouchHandlerSleep());
+			return true;
 		}
-//		if (m_firstTouchTime==0) {
-//			m_firstTouchTime=SystemClock.uptimeMillis();
-//		}
-//		m_totalTouches++;
-//		{
-//			int elapsed=Simply.elapsedUptimeMillis(m_firstTouchTime);
-//			if (elapsed>1000) {
-//				////Log.e("TOF","touches per second: "+(float)m_totalTouches/elapsed*1000);
-//				m_totalTouches=0;
-//				m_firstTouchTime=SystemClock.uptimeMillis();
-//			}
-//		}
-		}
-		Simply.waitSleep(Config.getTouchHandlerSleep());
-		return true;
 		
 	}
 	
