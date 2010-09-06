@@ -17,6 +17,8 @@
 */
 package org.tf.song;
 
+import android.util.Log;
+
 public class NoteEvent extends Event {
 	
 	public NoteEvent(int string,float time,float endTime) {
@@ -81,6 +83,7 @@ public class NoteEvent extends Event {
 		return state==STATE_MISSED;
 	}
 	public void setMissed() {
+		Log.v("taps","state set to missed");
 		state=STATE_MISSED;
 	}
 	

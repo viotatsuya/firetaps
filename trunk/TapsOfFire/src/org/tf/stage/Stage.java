@@ -22,6 +22,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+
 import javax.microedition.khronos.opengles.GL10;
 
 import org.tf.Config;
@@ -35,6 +37,7 @@ import org.tf.gl.sprite.SpriteRegion;
 import org.tf.gl.sprite.SpriteUtil;
 import org.tf.song.EventList;
 import org.tf.song.InvalidSongException;
+import org.tf.song.Note;
 import org.tf.song.NoteEvent;
 import org.tf.song.Song;
 import org.tf.song.TempoEvent;
@@ -56,7 +59,7 @@ public class Stage {
 		initializeBPM();
 		
 		m_guitar=new Guitar(song);
-		
+		m_pickedNotes = new ArrayList<Note> ();
 		m_soundEffects=new StageSoundEffects();
 		m_soundEffects.load(context);
 
@@ -207,7 +210,7 @@ public class Stage {
 	
 	// DEBUG
 	public void onKeyPressed(int keyCode,int metaState) {
-		//m_guitar.onKeyPressed(keyCode);
+		//m_guitar.onKeyPressed(keyCode);m_prevLastPickedKeyStrings
 		if (m_effects!=null) {
 			m_effects.onKeyPressed(keyCode,metaState);
 		}
@@ -326,7 +329,33 @@ public class Stage {
 		changeBPM();
 		setPosition();
 		setReadiness();
+		updateChordBufferNotes();
 		pickNotes();
+	}
+	private void updateChordBufferNotes()
+	{
+		long curTime = System.currentTimeMillis();
+		m_pickedNotes.add( new Note( m_pickedKeyStrings, curTime, curTime + CHORD_BUFFER_TIME ));
+		
+		
+		m_bufferChordStrings = 0;
+		
+		Note curNote;
+		for ( int i = 0 ; i < m_pickedNotes.size(); i++  )
+		{
+			curNote = m_pickedNotes.get(i);
+			
+			if ( curNote.getEndTime() <= System.currentTimeMillis() )
+			{
+				m_pickedNotes.remove(i);
+				i--;
+			}
+			else 
+			{
+				m_bufferChordStrings |= curNote.getString();
+			}
+		}
+	
 	}
 	
 	private void setPosition() {
@@ -444,7 +473,7 @@ public class Stage {
 		if (!m_countdownTimer.isStarted() || m_countdownTimer.isRunning()) {
 			return false;
 		}
-		m_countdownTimer.stop();
+		m_countdownTimer.stop(); 
 		return true;
 	}
 	
@@ -807,6 +836,10 @@ public class Stage {
 				}
 			}
 		}
+		//THIS IS A HACK, IT'S NOT GOOD PROGRAMMING
+		m_prevLastPickedKeyStrings = m_lastPickedKeyStrings;
+		m_lastPickedKeyStrings = m_pickedKeyStrings; 
+		
 		m_pickedKeyStrings=(strings &~ m_keyStrings);
 		m_keyStrings=strings;
 		
@@ -848,6 +881,9 @@ public class Stage {
 				}
 			}
 		}
+		
+		Log.v("taps", "m_keyStrings" + m_keyStrings);
+		Log.v("taps","strings:" + strings);
 		//Log.v("Taps", "using multitouch");
 		m_pickedKeyStrings=(strings &~ m_keyStrings);
 		m_keyStrings=strings;
@@ -896,6 +932,9 @@ public class Stage {
 	
 	private int m_keyStrings;
 	private int m_pickedKeyStrings;
+	private int m_bufferChordStrings;
+	private static int m_lastPickedKeyStrings; //these two are both hacks until I figure out a better fix for chords on multitouch
+	private static int m_prevLastPickedKeyStrings;
 	
 	private float m_keysWidth;
 	private float m_keyTapzoneWidth;
@@ -1017,6 +1056,7 @@ public class Stage {
 			if (rangeBegin!=0) {
 				NoteEvent note=notes.get(rangeBegin-1);
 				if (note.isIntact()) {
+					Log.v("taps","note is being set to missed");
 					note.setMissed();
 					noteSlipped=true;
 				}
@@ -1083,7 +1123,7 @@ public class Stage {
 		}
 		if (m_pickedKeyStrings!=0) {
 			if (requiredStrings==0 ||
-				!checkStrings(chordStrings,m_pickedKeyStrings))
+				checkStrings(chordStrings,m_pickedKeyStrings) == 0)
 			{
 				for (int i=0;i!=chordLength;++i) {
 					NoteEvent note=chord[i];
@@ -1092,13 +1132,30 @@ public class Stage {
 					}
 				}
 				onNotesMissed();
-			} else {
+			}
+			else if ( checkStrings( chordStrings, m_pickedKeyStrings) == 1 )
+			{
+				
+				Log.v("taps","string:" + m_pickedKeyStrings + "needed" + chordStrings);
+				Log.v("taps","m_bufferChordStrings" + m_bufferChordStrings);
+				if ( checkStrings(chordStrings, (m_bufferChordStrings | m_pickedKeyStrings) ) == 2 )
+				{
+					Log.v("taps","correct notes!");
+					for (int i=0;i!=chordLength;++i) {
+						chord[i].pick();
+					}
+					onNotesPicked(chord,chordLength);					
+				}
+				
+			}
+			else if ( checkStrings(chordStrings,m_pickedKeyStrings) == 2){
 				for (int i=0;i!=chordLength;++i) {
 					chord[i].pick();
 				}
 				onNotesPicked(chord,chordLength);
 			}
-		} else {
+		} 
+		if ( m_pickedKeyStrings == 0 || checkStrings( chordStrings, m_pickedKeyStrings) == 1){
 			boolean noteUnpicked=false;
 			if (m_keyStrings==0 && repickedStrings!=0) {
 				for (int i=0;i!=chordLength;++i) {
@@ -1115,6 +1172,7 @@ public class Stage {
 				onNoteUnpicked();
 			}
 			if (noteSlipped) {
+				//Log.v("taps","Note slipped");
 				onNotesSlipped();
 			}
 		}
@@ -1156,15 +1214,50 @@ public class Stage {
 		}
 	}
 
-	private static boolean checkStrings(int chordStrings,int activeStrings) {
+	private static int checkStrings(int chordStrings,int activeStrings) {
 		
 		//Log.v("Taps", "Touches:" + GameActivity.getNumTouches());
-		if ( (chordStrings==STRINGS_012 || chordStrings==STRINGS_02) && GameActivity.getNumTouches() > 1) {;
-			return ( STRINGS_02 & activeStrings) == STRINGS_02;
+		if ( (chordStrings==STRINGS_012 || chordStrings==STRINGS_02) && GameActivity.getNumTouches() > 1) {
+			if ( (STRINGS_02 & activeStrings) == STRINGS_02)
+			{
+				return 2;
+			}
+			else if (  (STRINGS_02 & activeStrings) != 0  )
+			{
+				if ( (STRINGS_02 & (activeStrings)) == STRINGS_02)
+				{
+					return 2;
+				}
+				else
+				{
+					return 1; //using a 1 will make it do nothing if only one note of a chord is hit
+				}
+				
+			}
+			else{
+				return 0;
+			}
 		} else if ( chordStrings ==STRINGS_012 || chordStrings == STRINGS_02){
-			return activeStrings==Guitar.STRING_1;
+			return (activeStrings==Guitar.STRING_1)? 2:0;
 		}else {
-			return (chordStrings & activeStrings)==chordStrings;
+			if ((chordStrings & activeStrings)==chordStrings){
+				return 2;
+			}
+			else if ( (chordStrings & activeStrings) != 0 )
+			{
+				if ( (chordStrings & (activeStrings)) == chordStrings)
+				{
+					return 2;
+				}
+				else 
+				{
+					return 1; //using a 1 will make it do nothing if only one note of a chord is hit
+				}
+			}
+			else
+			{
+				return 0;
+			}
 		}
 	}
 	
@@ -1308,6 +1401,11 @@ public class Stage {
 
 	private int m_position;
 	private float m_readiness;
+	
+	private float m_lastTime;
+	private ArrayList<Note> m_pickedNotes;
+	private static final int CHORD_BUFFER_TIME = 250;
+	
 
 	private CharString m_stringBuilder=new CharString(64);
 	

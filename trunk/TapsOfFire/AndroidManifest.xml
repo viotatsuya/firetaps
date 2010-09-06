@@ -2,10 +2,10 @@
 <manifest
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	package="org.tf"
-	android:versionCode="17"
-	android:versionName="1.0.0"> 
+	android:versionCode="21"
+	android:versionName="1.0.2 ( BETA )"> 
 
-	<uses-sdk android:minSdkVersion="3" />
+	<uses-sdk android:minSdkVersion="3"  android:targetSdkVersion="8"/>
 	  
 	<application android:icon="@drawable/icon" android:label="@string/app_name">
 
@@ -65,7 +65,7 @@
 			android:theme="@style/Theme"
 			android:screenOrientation="portrait">
 		</activity>
-		 <meta-data android:name="com.mobclix.APPLICATION_ID" android:value="08768CE7-859D-4F21-B2B7-F8EED8C6DA74"/>
+		 <meta-data android:name="com.mobclix.APPLICATION_ID" android:value="B3199F00-D7A3-4D93-A437-3D2B2DE5ED16"/>
 		<activity android:name="com.mobclix.android.sdk.MobclixBrowserActivity"/>
 	</application>
 	
