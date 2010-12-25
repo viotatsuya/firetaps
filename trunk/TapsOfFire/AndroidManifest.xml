@@ -2,8 +2,9 @@
 <manifest
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	package="org.tf"
-	android:versionCode="21"
-	android:versionName="1.0.2 ( BETA )"> 
+	android:versionCode="23"
+	android:versionName="1.1"
+	android:installLocation="preferExternal"> 
 
 	<uses-sdk android:minSdkVersion="3"  android:targetSdkVersion="8"/>
 	  

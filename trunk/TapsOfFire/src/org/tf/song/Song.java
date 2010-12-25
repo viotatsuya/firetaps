@@ -40,7 +40,7 @@ public class Song {
 				new EventListBuilder[ACTUAL_STRING_COUNT];
 			for (int j=0;j!=ACTUAL_STRING_COUNT;++j) {
 				events[j]=new EventListBuilder<NoteEvent>();
-			}
+			}	
 			m_noteEvents[i]=events;
 		}
 		m_selectedSkillIndex=-1;
