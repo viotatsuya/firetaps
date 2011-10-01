@@ -56,7 +56,7 @@
 
 	<string name="all_songs">All songs</string>
 	<string name="recent_songs">Recently played songs</string>
-	<string name="song_trace_fmt">&gt; %s by %s</string>
+	<string name="song_trace_fmt">\&gt; %1$s by %2$s</string>
 	<string name="songs_loaded_fmt">Songs: %d</string>
 	
 	<string name="reload_songs">Reload songs</string>
